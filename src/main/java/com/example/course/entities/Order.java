@@ -12,6 +12,9 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.example.course.entities.enums.OrderStatus;
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 @Entity
 @Table(name = "tb_order")
 public class Order implements Serializable{
@@ -21,7 +24,11 @@ public class Order implements Serializable{
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
+	
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yy-MM-dd'T'HH:mm:ss'Z'", timezone = "GMT")
 	private Instant moment;
+	
+	private Integer orderStatus;
 	
 	@ManyToOne
 	@JoinColumn(name = "client_id") //nome da chave estrangeira no BD, client_id fara parte da tabela Order
@@ -29,11 +36,11 @@ public class Order implements Serializable{
 	
 	public Order() {}
 
-	public Order(Long id, Instant moment, User client) {
-		super();
+	public Order(Long id, Instant moment,OrderStatus orderStatus, User client) {
 		this.id = id;
 		this.moment = moment;
 		this.client = client;
+		setOrderStatus(orderStatus);
 	}
 
 	public Long getId() {
@@ -55,9 +62,14 @@ public class Order implements Serializable{
 	public User getClient() {
 		return client;
 	}
+	
+	public OrderStatus getOrderStatus() {
+		return OrderStatus.valueOf(this.orderStatus);
+	}
 
-	public void setClient(User client) {
-		this.client = client;
+	public void setOrderStatus(OrderStatus orderStatus) {
+		if (orderStatus != null)
+		this.orderStatus = orderStatus.getCode();
 	}
 
 	@Override

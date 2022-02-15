@@ -2,7 +2,9 @@ package com.example.course.entities;
 
 import java.io.Serializable;
 import java.time.Instant;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -10,6 +12,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import com.example.course.entities.enums.OrderStatus;
@@ -21,6 +24,7 @@ public class Order implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 	
+	//IDENTITY: os valores a serem atribuídos ao identificador único serão gerados pela coluna de auto incremento do banco de dados.
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
@@ -34,6 +38,9 @@ public class Order implements Serializable{
 	@JoinColumn(name = "client_id") //nome da chave estrangeira no BD, client_id fara parte da tabela Order
 	private User client;
 	
+	@OneToMany(mappedBy = "id.order")
+	private Set<OrderItem> items = new HashSet<>();
+
 	public Order() {}
 
 	public Order(Long id, Instant moment,OrderStatus orderStatus, User client) {
@@ -61,6 +68,10 @@ public class Order implements Serializable{
 
 	public User getClient() {
 		return client;
+	}
+	
+	public Set<OrderItem> getOrderItems(){
+		return items;
 	}
 	
 	public OrderStatus getOrderStatus() {

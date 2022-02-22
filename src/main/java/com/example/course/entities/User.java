@@ -27,6 +27,7 @@ public class User implements Serializable{
 	private String email;
 	private String phone;
 	private String password;
+	
 	//serve para evitar um loop , vai ignorar a parte de clientes
 	@JsonIgnore 
 	@OneToMany (mappedBy = "client") //nome do atributo que tem na associacao
